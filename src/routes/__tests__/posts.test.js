@@ -88,4 +88,27 @@ describe("createPost", () => {
 
     expect(res.status).toHaveBeenCalledWith(502);
   });
+
+  describe("createPostsBulk", () => {
+    it("creates multiple posts and returns 207 with per-item results", async () => {
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ id: 101, title: "New", body: "Post", userId: 1 }),
+      });
+
+      const req = {
+        body: {
+          posts: [
+            { title: "A", body: "Post A", userId: 1 },
+            { title: "B", body: "Post B", userId: 2 },
+          ],
+        },
+      };
+      const res = mockRes();
+
+      await createPostsBulk(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(207);
+    });
+  });
 });

@@ -67,3 +67,53 @@ export async function createPost(req, res) {
 
   return res.status(201).json(data);
 }
+const MAX_BULK_SIZE = 20;
+
+/**
+ * POST /posts/bulk
+ * Creates multiple fake posts via JSONPlaceholder in a single bulk write.
+ * This bulk write operation exercises QARA's bulk-operation and
+ * write-operation risk signals on this demo repo.
+ */
+export async function createPostsBulk(req, res) {
+  const { posts } = req.body ?? {};
+
+  if (!Array.isArray(posts) || posts.length === 0) {
+    return res.status(400).json({ error: "'posts' must be a non-empty array." });
+  }
+
+  if (posts.length > MAX_BULK_SIZE) {
+    return res.status(400).json({
+      error: `Cannot create more than ${MAX_BULK_SIZE} posts in a single bulk request.`,
+    });
+  }
+
+  const results = await Promise.all(
+    posts.map(async (post) => {
+      const { title, body, userId } = post ?? {};
+
+      if (!title || !body || !userId) {
+        return { success: false, error: "Missing title, body, or userId." };
+      }
+
+      try {
+        const response = await fetch(JSONPLACEHOLDER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title, body, userId }),
+        });
+
+        if (!response.ok) {
+          return { success: false, error: "Provider rejected the write." };
+        }
+
+        const data = await response.json();
+        return { success: true, post: data };
+      } catch {
+        return { success: false, error: "Failed to reach the posts provider." };
+      }
+    }),
+  );
+
+  return res.status(207).json({ results });
+}
