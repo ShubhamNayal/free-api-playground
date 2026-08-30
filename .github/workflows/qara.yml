@@ -1,0 +1,21 @@
+name: QARA QA Bot
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  qara:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ShubhamNayal/qara-ai-quality-engineer@main
+        with:
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}

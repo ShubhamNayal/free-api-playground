@@ -1,0 +1,20 @@
+{
+  "name": "free-api-playground",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A small Express service that wraps a handful of free, no-key public APIs. Used as a demo/test bed for the QARA GitHub Action.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.8",
+    "supertest": "^7.0.0"
+  }
+}
