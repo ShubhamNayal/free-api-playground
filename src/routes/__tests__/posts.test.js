@@ -111,4 +111,23 @@ describe("createPost", () => {
       expect(res.status).toHaveBeenCalledWith(207);
     });
   });
+      it("returns 400 when the posts array exceeds MAX_BULK_SIZE", async () => {
+        global.fetch = vi.fn();
+
+        const req = {
+          body: {
+            posts: Array.from({ length: 21 }, (_, index) => ({
+              title: `Post ${index}`,
+              body: `Body ${index}`,
+              userId: 1,
+            })),
+          },
+        };
+        const res = mockRes();
+
+        await createPostsBulk(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(global.fetch).not.toHaveBeenCalled();
+      });
 });
