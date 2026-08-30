@@ -4,7 +4,7 @@ import { getWeather } from "./routes/weather.js";
 import { getRandomDog } from "./routes/dog.js";
 import { getAdvice } from "./routes/advice.js";
 import { getCountry } from "./routes/countries.js";
-import { getPost, createPost } from "./routes/posts.js";
+import { getPost, createPost, createPostsBulk } from "./routes/posts.js";
 
 export function createApp() {
   const app = express();
@@ -21,6 +21,7 @@ export function createApp() {
   app.get("/countries/:name", getCountry);
   app.get("/posts/:id", getPost);
   app.post("/posts", createPost);
+  app.post("/posts/bulk", createPostsBulk);
 
   return app;
 }
