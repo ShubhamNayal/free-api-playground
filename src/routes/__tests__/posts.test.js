@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { getPost, createPost } from "../posts.js";
+import { getPost, createPost, createPostsBulk } from "../posts.js";
 
 function mockRes() {
   const res = {};
